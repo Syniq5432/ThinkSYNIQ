@@ -1,0 +1,12 @@
+customer_id,customer_name,region,total_spent,email,phone
+1.0,John Smith,West,5400,,
+2.0,Emily Jones,East,7200,,
+3.0,Michael Brown,South,3100,,
+4.0,Crystal Bridges,East,8200,,
+5.0,Amy Dunlap,North,7700,,
+6.0,Sue Dillon,South,9100,,
+,Maxine Gills,maxinegills@gmail.com,555-287-8768,,
+,Kathy Castle,kc@gmail.com,687-787-64383,,
+9.0,Sally Suns,,,sally@gmail.com,224-786-8954
+10.0,Tyson Berry,West,7800,tberry@gmail.com,787-840-0987
+11.0,Shawn Grahm,South,6100,sg@gmail.com,787-840-0765
