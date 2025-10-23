@@ -1,5 +1,8 @@
-import gradio as gr
+import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.express as px
+import seaborn as sns
 import csv
 import os
 
@@ -89,29 +92,89 @@ def add_customer(name, region, spent, email, phone):
     df.to_csv("data/customers.csv", index=False)
     return f"✅ Added {name} to customer list!"
 
-# === UI Layout ===
-with gr.Blocks(theme=gr.themes.Soft(
-    primary_hue=gr.themes.colors.slate,
-    secondary_hue=gr.themes.colors.blue,
-    neutral_hue=gr.themes.colors.gray,
-)) as ui:
-    gr.Markdown("## 💼 ThinkSYNIQ Company Dashboard")
+# ---------------- THINKSYNiQ DASHBOARD ----------------
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.express as px
 
-    with gr.Group():
-        table = gr.Radio(["Customers", "Products", "Transactions", "Profit & Loss"], label="Choose a Table")
-        output = gr.Dataframe(label="Output")
-        submit = gr.Button("Submit")
-        submit.click(fn=view_data, inputs=table, outputs=output)
+st.set_page_config(page_title="ThinkSYNiQ Dashboard", layout="wide")
 
-    gr.Markdown("---\n### ➕ Add New Customer")
-    new_name = gr.Textbox(label="Customer Name")
-    new_region = gr.Textbox(label="Region")
-    new_spent = gr.Textbox(label="Total Spent")
-    new_email = gr.Textbox(label="Email")
-    new_phone = gr.Textbox(label="Phone Number")
-    add_btn = gr.Button("Add Customer")
-    status = gr.Textbox(label="Status")
-    add_btn.click(add_customer, [new_name, new_region, new_spent, new_email, new_phone], status)
+# --- Toggle between Admin & Customer ---
+role = st.radio("Select Mode:", ["Admin", "Customer"], horizontal=True)
 
-print("🚀 Launching ThinkSYNIQ dashboard...")
-ui.launch()
+st.markdown("<h1 style='text-align:center; color:#001f3f;'>💼 ThinkSYNiQ Company Dashboard</h1>", unsafe_allow_html=True)
+
+# --- Tabs for Admin View ---
+if role == "Admin":
+    tabs = st.tabs(["Customers", "Products", "Transactions", "P&L"])
+
+    with tabs[0]:
+        st.subheader("Manage Customers")
+        st.text_input("Customer Name")
+        st.text_input("Email Address")
+        st.text_input("Phone Number")
+        st.button("Add Customer")
+
+    with tabs[1]:
+        st.subheader("Manage Products")
+        st.text_input("Product Name")
+        st.number_input("Price ($)", min_value=0.0, step=0.01)
+        st.button("Add Product")
+
+    with tabs[2]:
+        st.subheader("Transactions")
+        st.selectbox("Select Customer", ["Sarah Jones", "Michael Brown"])
+        st.selectbox("Select Product", ["Consultation", "Website Package"])
+        st.number_input("Quantity", min_value=1, step=1)
+        st.button("Add Transaction")
+
+    with tabs[3]:
+        st.subheader("Profit & Loss Overview")
+        st.write("Financial charts and summaries will appear here.")
+        sample_data = pd.DataFrame({
+            "Month": ["Jan", "Feb", "Mar"],
+            "Revenue": [4000, 6000, 8000],
+            "Expenses": [2500, 3000, 3500]
+        })
+        sample_data["Profit"] = sample_data["Revenue"] - sample_data["Expenses"]
+        fig = px.line(sample_data, x="Month", y=["Revenue", "Expenses", "Profit"], markers=True)
+        st.plotly_chart(fig, use_container_width=True)
+
+# --- Customer Webpage View ---
+else:
+    st.subheader("Welcome to ThinkSYNiQ Services")
+    st.write("Explore our available products and services below:")
+    st.dataframe(pd.DataFrame({
+        "Product": ["Consultation", "AI Strategy Session", "Website Package"],
+        "Price": ["$49.99", "$199.99", "$499.99"]
+    }))
+
+# --- Floating Chatbot (bottom-right) ---
+st.markdown("""
+    <style>
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #001f3f;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+            width: 300px;
+        }
+        .chatbot-input {
+            width: 100%;
+            padding: 5px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+    <div class="chatbot-container">
+        <strong>💬 ThinkSYNiQ Assistant</strong><br>
+        <em>Ask me about products, pricing, or services!</em>
+        <input class="chatbot-input" placeholder="Type your question..." />
+    </div>
+""", unsafe_allow_html=True)
+
