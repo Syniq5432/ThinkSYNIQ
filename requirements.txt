@@ -1,4 +1,5 @@
-gradio==4.44.0
+streamlit==1.39.0
 pandas==2.2.2
 matplotlib==3.9.0
 plotly==5.23.0
+seaborn==0.13.2
